@@ -1,0 +1,40 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "content/uploads"
+public_folder: "/content/uploads"
+
+collections:
+  - name: "interviews"
+    label: "Interviews"
+    files:
+      - file: "content/interviews.json"
+        label: "Interview episodes"
+        name: "interviews"
+        fields:
+          - label: "Episodes"
+            name: "episodes"
+            widget: "list"
+            summary: "{{name}} — {{industry}}"
+            fields:
+              - { label: "Guest name", name: "name", widget: "string", required: false, default: "", hint: "Leave blank to show this slot as \"Reserved\"" }
+              - label: "Industry"
+                name: "industry"
+                widget: "select"
+                options:
+                  - "Agriculture"
+                  - "Manufacturing"
+                  - "Product Development"
+                  - "Marketing"
+                  - "Food Security"
+                  - "Nutrition"
+                  - "Medicine"
+                  - "Food Science"
+              - { label: "Portrait photo", name: "photo", widget: "image", required: false, default: "", choose_url: true, hint: "Leave empty to keep the placeholder ring" }
+              - { label: "Video URL", name: "video", widget: "string", required: false, default: "", hint: "A YouTube link, a Vimeo link, or a direct .mp4/.webm URL" }
+              - label: "Write-up (add one list item per paragraph)"
+                name: "post"
+                widget: "list"
+                required: false
+                default: []

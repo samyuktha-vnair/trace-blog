@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Trace is a video-interview journal following the thread connecting agriculture, food science, and food security.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%A7%B5%3C/text%3E%3C/svg%3E">
+<title>Trace</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper: #EEEEE1;
+    --paper-raised: #E4E4D2;
+    --paper-raised-2: #DBDBC6;
+    --ink: #1B2018;
+    --ink-soft: #565C4B;
+    --trace: #2B6E4F;
+    --trace-strong: #1F5A40;
+    --flag: #D8501C;
+    --wheat: #A9790E;
+    --line: rgba(27,32,24,0.15);
+    --line-strong: rgba(27,32,24,0.3);
+    --shadow: 0 1px 0 rgba(27,32,24,0.06);
+    --focus: #1F5A40;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #12140F;
+      --paper-raised: #1A1D15;
+      --paper-raised-2: #23271C;
+      --ink: #EDEBDD;
+      --ink-soft: #A6AC97;
+      --trace: #4FBE85;
+      --trace-strong: #6ED29C;
+      --flag: #FF7A3D;
+      --wheat: #E0B23C;
+      --line: rgba(237,235,221,0.16);
+      --line-strong: rgba(237,235,221,0.32);
+      --shadow: 0 1px 0 rgba(0,0,0,0.4);
+      --focus: #6ED29C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #12140F;
+    --paper-raised: #1A1D15;
+    --paper-raised-2: #23271C;
+    --ink: #EDEBDD;
+    --ink-soft: #A6AC97;
+    --trace: #4FBE85;
+    --trace-strong: #6ED29C;
+    --flag: #FF7A3D;
+    --wheat: #E0B23C;
+    --line: rgba(237,235,221,0.16);
+    --line-strong: rgba(237,235,221,0.32);
+    --shadow: 0 1px 0 rgba(0,0,0,0.4);
+    --focus: #6ED29C;
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0; background: var(--paper); color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+    font-size: 16px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *,*::before,*::after{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  h1,h2,h3{ font-family:'Fraunces', Georgia, serif; font-weight:600; letter-spacing:-0.01em; text-wrap:balance; margin:0; color:var(--ink); }
+  a{ color:inherit; }
+  p{ margin:0; }
+  button{ font-family:inherit; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase;
+    color: var(--trace-strong); display:flex; align-items:center; gap:0.6em;
+  }
+  .eyebrow::before{ content:""; width:1.4em; height:1px; background: currentColor; display:inline-block; }
+  .tag{
+    font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:0.7rem; letter-spacing:0.06em;
+    color: var(--ink-soft); text-transform:uppercase;
+  }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  /* ---------- header / nav ---------- */
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--trace); color:var(--paper); padding:0.6em 1em; z-index:100; }
+  .skip-link:focus{ left:0.5rem; top:0.5rem; }
+
+  header.site{
+    position: sticky; top:0; z-index:20; background: var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-block:0.9rem; }
+  .auth-control{ display:flex; align-items:center; gap:0.5rem; flex:none; }
+  .auth-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;
+    background:none; border:1px solid var(--line-strong); border-radius:2px; padding:0.4em 0.75em;
+    cursor:pointer; color:var(--ink-soft); text-decoration:none; white-space:nowrap;
+  }
+  .auth-btn:hover{ border-color: var(--ink); color: var(--ink); }
+  .wordmark{
+    font-family:'IBM Plex Mono', monospace; font-weight:500; font-size:1rem; letter-spacing:0.18em;
+    text-decoration:none; display:flex; align-items:center; gap:0.55em;
+  }
+  .wordmark .dot{ width:0.5em; height:0.5em; border-radius:50%; background: var(--flag); display:inline-block; }
+  nav.main-nav{ display:flex; gap:clamp(0.9rem, 2vw, 1.8rem); flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; max-width:100%; }
+  nav.main-nav::-webkit-scrollbar{ display:none; }
+  nav.main-nav a{
+    text-decoration:none; font-size:0.85rem; color:var(--ink-soft); white-space:nowrap;
+    padding-block:0.3rem; border-bottom:1px solid transparent; flex:none;
+  }
+  nav.main-nav a:hover{ color:var(--ink); }
+  nav.main-nav a[aria-current="page"]{ color:var(--ink); border-bottom-color: var(--flag); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--focus); outline-offset:2px;
+  }
+
+  main{ display:block; }
+  .page{ display:none; }
+  .page.is-active{ display:block; }
+
+  /* ---------- home ---------- */
+  .hero{ padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 5vw, 3rem); display:grid; grid-template-columns: minmax(0,1fr) 260px; gap: clamp(2rem,5vw,4rem); align-items:start; }
+  @media (max-width: 860px){ .hero{ grid-template-columns: 1fr; } }
+  .hero h1{ font-size: clamp(2.5rem, 6.4vw, 4.6rem); line-height:1.02; margin-block: 0.5rem 1.1rem; }
+  .hero h1 em{ font-style:italic; color: var(--trace-strong); }
+  .lede{ font-size: clamp(1.05rem, 1.6vw, 1.25rem); color: var(--ink); max-width: 46ch; }
+  .lede + .lede{ margin-top:0.9rem; }
+  .cta-row{ display:flex; gap:0.9rem; flex-wrap:wrap; margin-top:1.8rem; }
+  .manifest{ border:1px solid var(--line); border-radius:4px; padding:1.2rem 1.3rem; background: var(--paper-raised); }
+  .manifest .tag{ display:block; margin-bottom:0.9rem; }
+  .manifest ol{ list-style:none; margin:0; padding:0; display:grid; gap:0.55rem; }
+  .manifest li{ display:flex; gap:0.7em; font-size:0.85rem; align-items:baseline; }
+  .manifest li span.num{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color: var(--wheat); flex:none; width:1.4em; }
+  @media (max-width:860px){ .manifest{ margin-top:0.5rem; } }
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase;
+    text-decoration:none; padding:0.75em 1.2em; border-radius:2px; border:1px solid var(--line-strong);
+    display:inline-flex; align-items:center; gap:0.5em; transition: background 0.15s, color 0.15s, border-color .15s;
+  }
+  .btn.primary{ background: var(--trace); border-color:var(--trace); color: var(--paper); }
+  .btn.primary:hover{ background: var(--trace-strong); border-color:var(--trace-strong); }
+  .btn.ghost:hover{ border-color: var(--ink); }
+  .btn .arrow{ transition: transform .15s; }
+  .btn:hover .arrow{ transform: translateX(3px); }
+
+  /* thread diagram on home */
+  .thread-wrap{ margin-top: clamp(2.5rem,6vw,4rem); }
+  .thread-wrap figcaption{ margin-top:0.9rem; font-size:0.85rem; color:var(--ink-soft); max-width:60ch; }
+  svg text{ font-family:'IBM Plex Mono', monospace; fill: currentColor; }
+  .thread-svg{ width:100%; height:auto; overflow:visible; color: var(--ink); }
+  .thread-stop circle{ fill: var(--paper); stroke: var(--ink); stroke-width:1.6; }
+  .thread-stop.is-more circle{ stroke-dasharray:3 3; }
+  .thread-stop text{ font-size:11px; fill: var(--ink-soft); }
+  .thread-line{ fill:none; stroke: var(--ink); stroke-width:1.4; stroke-dasharray:1 6; stroke-linecap:round; }
+
+  /* ---------- section shell ---------- */
+  .page.page-section{ padding-block: clamp(2.2rem,5vw,3.2rem) clamp(3rem,7vw,4.5rem); }
+  .section-head{ max-width:64ch; margin-bottom: clamp(1.6rem,3vw,2.4rem); }
+  .section-head h2{ font-size: clamp(1.9rem, 3.6vw, 2.5rem); margin-top:0.5rem; }
+  .section-head p{ margin-top:0.9rem; color: var(--ink-soft); font-size:1.02rem; }
+  hr.rule{ border:none; border-top:1px solid var(--line); margin-block: clamp(2rem,5vw,3rem); }
+
+  /* ---------- about ---------- */
+  .about-grid{ display:grid; grid-template-columns: 220px 1fr; gap: clamp(2rem,5vw,3.5rem); align-items:start; }
+  @media (max-width: 640px){ .about-grid{ grid-template-columns:1fr; } }
+  .portrait{
+    width:200px; height:200px; border-radius:50%; border:1.6px dashed var(--line-strong);
+    display:flex; align-items:center; justify-content:center; color: var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-align:center;
+    background: var(--paper-raised); text-transform:uppercase; line-height:1.5;
+  }
+  .about-copy p{ max-width:62ch; margin-bottom:1.1rem; color:var(--ink); }
+  .about-copy p:last-child{ margin-bottom:0; }
+  .record-list{ list-style:none; margin: clamp(1.8rem,4vw,2.4rem) 0 0; padding:0; display:grid; gap:1.1rem; }
+  .record-list li{ display:grid; grid-template-columns: 128px 1fr; gap:1rem; padding-block:0.9rem; border-top:1px solid var(--line); }
+  .record-list li:first-child{ border-top:1px solid var(--line-strong); }
+  @media (max-width:560px){ .record-list li{ grid-template-columns:1fr; gap:0.3rem; } }
+  .record-list dt{ font-family:'IBM Plex Mono', monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--wheat); }
+  .record-list dd{ margin:0; color:var(--ink); }
+
+  /* ---------- interviews grid ---------- */
+  .face-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1.4rem,3vw,2rem); list-style:none; margin:0; padding:0; }
+  @media (max-width:760px){ .face-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:420px){ .face-grid{ grid-template-columns: 1fr 1fr; gap:1rem; } }
+  .face-card{ display:flex; flex-direction:column; align-items:center; gap:0.8rem; text-align:center; }
+  .face-btn{
+    width:100%; max-width:148px; aspect-ratio:1; border-radius:50%; border:1.6px dashed var(--line-strong);
+    background: var(--paper-raised); color: var(--ink-soft); cursor:pointer; padding:0; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+    transition: border-color .15s, color .15s, transform .15s;
+  }
+  .face-btn:hover{ border-color: var(--trace); color: var(--trace-strong); transform: translateY(-2px); }
+  .face-btn.has-photo{ border-style:solid; border-color:var(--line-strong); }
+  .face-btn.has-photo:hover{ border-color: var(--trace); }
+  .face-name{ font-size:0.92rem; font-weight:500; color:var(--ink); }
+  .face-role{ font-size:0.72rem; }
+
+  /* dialog */
+  dialog#interview-modal{
+    border:none; border-radius:4px; padding:0; width:min(640px, 92vw);
+    background: var(--paper); color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  dialog#interview-modal::backdrop{ background: rgba(10,12,8,0.55); }
+  .modal-inner{ padding: clamp(1.4rem,4vw,2rem); }
+  .modal-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:1.1rem; }
+  .modal-close{
+    background:none; border:1px solid var(--line-strong); border-radius:50%; width:2rem; height:2rem;
+    cursor:pointer; color:var(--ink); font-size:1rem; line-height:1; flex:none;
+  }
+  .modal-close:hover{ border-color: var(--ink); }
+  .video-frame{
+    aspect-ratio:16/9; background: var(--paper-raised-2); border:1px solid var(--line); border-radius:3px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.7rem; color:var(--ink-soft);
+    margin-bottom:1.1rem;
+  }
+  .play-tri{ width:0; height:0; border-top:11px solid transparent; border-bottom:11px solid transparent; border-left:18px solid var(--ink-soft); }
+  .modal-post p{ color: var(--ink-soft); font-style:italic; margin-bottom:0.6rem; }
+  .modal-post p:last-child{ margin-bottom:0; }
+
+  /* ---------- TRACEing ---------- */
+  .tracing-toolbar{ display:flex; flex-wrap:wrap; gap:0.8rem; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .zoom-controls{ display:flex; gap:0.4rem; }
+  .zoom-controls button{
+    width:2.1rem; height:2.1rem; border:1px solid var(--line-strong); background: var(--paper-raised);
+    color: var(--ink); border-radius:2px; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.95rem;
+  }
+  .zoom-controls button:hover{ border-color: var(--ink); }
+  .hint{ font-size:0.78rem; color: var(--ink-soft); font-family:'IBM Plex Mono', monospace; }
+  .tracing-stage{
+    position:relative; border:1px solid var(--line); border-radius:4px; background: var(--paper-raised);
+    overflow:hidden; touch-action:none;
+  }
+  #tracing-svg{ width:100%; height:clamp(360px, 62vw, 560px); display:block; cursor:grab; }
+  #tracing-svg.is-dragging{ cursor:grabbing; }
+  .web-node circle{ fill: var(--paper); stroke: var(--ink); stroke-width:1.6; transition: stroke .15s, fill .15s; }
+  .web-node.is-hub circle{ fill: var(--ink); stroke: var(--ink); }
+  .web-node.is-hub text{ fill: var(--paper); }
+  .web-node text{ fill: var(--ink); font-size:12.5px; }
+  .web-node .node-dot-label{ font-size:15px; fill: var(--ink-soft); pointer-events:none; }
+  .web-node .node-caption{ font-size:11.5px; fill: var(--ink-soft); }
+  .web-node.is-active .node-caption{ fill: var(--flag); }
+  .web-node{ cursor:pointer; }
+  .web-node:hover circle{ stroke: var(--trace); }
+  .web-node.is-active circle{ stroke: var(--flag); stroke-width:2.2; }
+  .web-edge{ stroke: var(--line-strong); stroke-width:1.3; stroke-dasharray:2 5; fill:none; transition: stroke .2s, stroke-width .2s; }
+  .web-edge.is-example{ stroke: var(--flag); stroke-dasharray:none; stroke-width:1.6; }
+  .web-edge.is-active{ stroke: var(--flag); stroke-width:2; }
+  .legend{ display:flex; flex-wrap:wrap; gap:1.4rem; margin-top:0.9rem; font-size:0.78rem; color: var(--ink-soft); }
+  .legend span{ display:inline-flex; align-items:center; gap:0.5em; }
+  .legend .swatch{ width:1.6em; height:0; border-top:2px solid var(--line-strong); }
+  .legend .swatch.example{ border-top:2px solid var(--flag); border-top-style:solid; }
+  .tracing-panel{
+    margin-top:1rem; padding:1rem 1.2rem; border:1px solid var(--line); border-radius:4px; background: var(--paper);
+    min-height:3.4rem; display:flex; flex-direction:column; gap:0.35rem;
+  }
+  .tracing-panel .panel-title{ font-family:'IBM Plex Mono', monospace; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--wheat); }
+  .tracing-panel .panel-body{ color: var(--ink-soft); font-size:0.92rem; }
+
+  /* ---------- portfolio ---------- */
+  .project-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:1.4rem; list-style:none; margin:0; padding:0; }
+  @media (max-width:820px){ .project-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:560px){ .project-grid{ grid-template-columns: 1fr; } }
+  .project-card{
+    border:1.6px dashed var(--line-strong); border-radius:4px; padding:1.4rem; min-height:190px;
+    display:flex; flex-direction:column; justify-content:space-between; gap:1rem; color: var(--ink-soft);
+  }
+  .project-card .plus{ font-family:'IBM Plex Mono', monospace; font-size:1.4rem; color: var(--ink-soft); }
+  .project-card .proj-tag{ font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color: var(--wheat); }
+  .project-card p{ font-size:0.9rem; }
+
+  footer.site{ border-top:1px solid var(--line); margin-top: clamp(2rem,5vw,3rem); }
+  .footer-row{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:0.6rem; padding-block:1.6rem; font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color: var(--ink-soft); letter-spacing:0.04em; }
+</style>
+</head>
+<body>
+
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <a class="wordmark" href="#/home"><span class="dot" aria-hidden="true"></span>TRACE</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="#/home" data-route="home">Home</a>
+      <a href="#/about" data-route="about">About</a>
+      <a href="#/interviews" data-route="interviews">Interviews</a>
+      <a href="#/tracing" data-route="tracing">TRACEing</a>
+      <a href="#/portfolio" data-route="portfolio">Portfolio</a>
+    </nav>
+    <div class="auth-control" id="auth-control"></div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section class="page" id="page-home" data-page="home">
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">A video journal of the food system</p>
+        <h1>Follow the<br><em>thread.</em></h1>
+        <p class="lede">Trace is a video interview series with the people who move food from field to fork &mdash; and study what it does once it gets there.</p>
+        <p class="lede">Each conversation follows one thread of the food system: agriculture, manufacturing, product development, marketing, food security, nutrition, medicine, and food science &mdash; and how those threads knot together.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#/interviews">Meet the people <span class="arrow">&rarr;</span></a>
+          <a class="btn ghost" href="#/tracing">See how it connects <span class="arrow">&rarr;</span></a>
+        </div>
+      </div>
+
+      <aside class="manifest" aria-label="Fields Trace covers">
+        <span class="tag">Fields on the record</span>
+        <ol>
+          <li><span class="num">01</span>Agriculture</li>
+          <li><span class="num">02</span>Manufacturing</li>
+          <li><span class="num">03</span>Product development</li>
+          <li><span class="num">04</span>Marketing</li>
+          <li><span class="num">05</span>Food security</li>
+          <li><span class="num">06</span>Nutrition</li>
+          <li><span class="num">07</span>Medicine</li>
+          <li><span class="num">08</span>Food science</li>
+        </ol>
+      </aside>
+    </div>
+
+    <figure class="thread-wrap">
+      <svg class="thread-svg" viewBox="0 0 1040 190" role="img" aria-label="A stitched thread running through eight fields: agriculture, manufacturing, product development, marketing, food security, nutrition, medicine, and food science, with a final stop marked for more to come.">
+        <path class="thread-line" d="M30,95 C 150,78 190,112 310,95 S 470,78 550,95 S 710,112 750,95 S 870,78 1010,95" />
+        <g id="thread-stops"></g>
+      </svg>
+      <figcaption>The fields Trace moves between &mdash; one continuous thread, stop by stop. The full, connected map lives on the <a href="#/tracing">TRACEing</a> page.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="page page-section" id="page-about" data-page="about">
+    <div class="section-head">
+      <p class="eyebrow">Who's asking</p>
+      <h2>About Trace</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="portrait" aria-hidden="true">Photo<br>coming<br>soon</div>
+      <div class="about-copy">
+        <p>Hi, I'm Samyuktha &mdash; the person behind the camera on Trace. I've been a food security advocate since the fifth grade, when I first started working with the American Dairy Association, where I've since spoken on their panels as well as a panel for the Food Research &amp; Action Center (FRAC).</p>
+        <p>More recently, I directed a food science documentary through Rutgers' FAME program, which is where the idea for Trace really started: the best explanations of how our food system works come from the people inside it, on camera, in their own words.</p>
+        <p>I'm currently a BAIT (Business Analytics &amp; Information Technology) major with a Food Science minor at Rutgers, and I'm especially interested in agriculture technology, workflow development, and food science &mdash; which is a lot of why this project exists in the first place.</p>
+      </div>
+    </div>
+
+    <dl class="record-list">
+      <li><dt>Advocacy</dt><dd>Food security advocate since 5th grade &mdash; American Dairy Association panels and a FRAC panel.</dd></li>
+      <li><dt>Film</dt><dd>Directed a food science documentary through Rutgers' FAME program.</dd></li>
+      <li><dt>Study</dt><dd>BAIT major, Food Science minor.</dd></li>
+      <li><dt>Focus</dt><dd>Agriculture technology, workflow development, and food science.</dd></li>
+    </dl>
+  </section>
+
+  <!-- ============ INTERVIEWS ============ -->
+  <section class="page page-section" id="page-interviews" data-page="interviews">
+    <div class="section-head">
+      <p class="eyebrow">On the record</p>
+      <h2>The interviews</h2>
+      <p>Every conversation gets a face here. Click a portrait to watch the recording and read the notes &mdash; this row fills in as episodes go live.</p>
+    </div>
+
+    <ul class="face-grid" id="face-grid"></ul>
+  </section>
+
+  <!-- ============ TRACEING ============ -->
+  <section class="page page-section" id="page-tracing" data-page="tracing">
+    <div class="section-head">
+      <p class="eyebrow">The supply web &mdash; coming soon</p>
+      <h2>TRACEing</h2>
+      <p>This is the map Trace is building: every guest, every field, every place they turn out to connect. Right now it shows the shape the map will take &mdash; drag to pan, scroll (or use the buttons) to zoom, and click a stop to see what belongs there.</p>
+    </div>
+
+    <div class="tracing-toolbar">
+      <p class="hint">Drag to pan &middot; scroll to zoom &middot; click a node</p>
+      <div class="zoom-controls">
+        <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>
+        <button type="button" id="zoom-reset" aria-label="Reset view">&#8635;</button>
+        <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+      </div>
+    </div>
+
+    <div class="tracing-stage">
+      <svg id="tracing-svg" viewBox="0 0 900 620" role="img" aria-label="An interactive web diagram with a central Trace node connected to eight food-system fields, mostly by unmapped dashed lines with one example connection shown solid.">
+        <g id="tracing-world"></g>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <span><span class="swatch" aria-hidden="true"></span> not yet mapped</span>
+      <span><span class="swatch example" aria-hidden="true"></span> example connection</span>
+    </div>
+
+    <div class="tracing-panel" id="tracing-panel" aria-live="polite">
+      <p class="panel-title">Nothing selected</p>
+      <p class="panel-body">Click any stop on the web to preview what will live there once interviews are mapped.</p>
+    </div>
+  </section>
+
+  <!-- ============ PORTFOLIO ============ -->
+  <section class="page page-section" id="page-portfolio" data-page="portfolio">
+    <div class="section-head">
+      <p class="eyebrow">Work in progress</p>
+      <h2>Portfolio &amp; projects</h2>
+      <p>Food science and ag-tech work outside the interview chair &mdash; research, workflow tools, and side projects. Space is reserved below; details go up as projects wrap.</p>
+    </div>
+
+    <ul class="project-grid" id="project-grid"></ul>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap footer-row">
+    <span>TRACE &mdash; a video journal of the food system</span>
+    <span>Field to fork, on the record</span>
+  </div>
+</footer>
+
+<dialog id="interview-modal">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <div>
+        <p class="tag" id="modal-tag">Ep. 00 &mdash; Reserved</p>
+        <h3 id="modal-name">Coming soon</h3>
+      </div>
+      <button type="button" class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="modal-video"></div>
+    <div class="modal-post" id="modal-post"></div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- sign in (Netlify Identity) ----------------
+     Only people you invite from your Netlify site's Identity tab can
+     ever sign in — this button just opens Netlify's own login widget.
+     Once signed in, "Admin" opens /admin, the content editor. */
+  function renderAuth(user){
+    var el = document.getElementById("auth-control");
+    if (!el) return;
+    el.innerHTML = "";
+    if (user){
+      var adminLink = document.createElement("a");
+      adminLink.href = "/admin/"; adminLink.className = "auth-btn"; adminLink.textContent = "Admin";
+      var signout = document.createElement("button");
+      signout.type = "button"; signout.className = "auth-btn"; signout.textContent = "Sign out";
+      signout.addEventListener("click", function(){ window.netlifyIdentity && window.netlifyIdentity.logout(); });
+      el.appendChild(adminLink); el.appendChild(signout);
+    } else {
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "auth-btn"; btn.textContent = "Sign in";
+      btn.addEventListener("click", function(){ window.netlifyIdentity && window.netlifyIdentity.open(); });
+      el.appendChild(btn);
+    }
+  }
+  if (window.netlifyIdentity){
+    netlifyIdentity.on("init", function(user){
+      renderAuth(user);
+      if (!user) netlifyIdentity.on("login", function(){ document.location.href = "/admin/"; });
+    });
+    netlifyIdentity.on("login", function(user){ renderAuth(user); });
+    netlifyIdentity.on("logout", function(){ renderAuth(null); });
+  } else {
+    renderAuth(null);
+  }
+
+  /* ---------------- routing ---------------- */
+  var routes = ["home","about","interviews","tracing","portfolio"];
+  function applyRoute(){
+    var hash = (location.hash || "#/home").replace(/^#\/?/, "");
+    if (routes.indexOf(hash) === -1) hash = "home";
+    routes.forEach(function(r){
+      var sec = document.getElementById("page-" + r);
+      if (sec) sec.classList.toggle("is-active", r === hash);
+    });
+    document.querySelectorAll(".main-nav a").forEach(function(a){
+      var isCurrent = a.getAttribute("data-route") === hash;
+      if (isCurrent) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+  window.addEventListener("hashchange", applyRoute);
+  applyRoute();
+
+  /* ---------------- home thread stops ---------------- */
+  var fields = [
+    "Agriculture","Manufacturing","Product Development","Marketing",
+    "Food Security","Nutrition","Medicine","Food Science"
+  ];
+  var shortFields = [
+    "Agriculture","Manufacturing","Product Dev.","Marketing",
+    "Food Security","Nutrition","Medicine","Food Science"
+  ];
+  var stopsG = document.getElementById("thread-stops");
+  var STOP_Y = 95, STOP_START = 30, STOP_END = 890, STOP_COUNT = fields.length;
+  var stopXs = fields.map(function(_, i){ return STOP_START + i * ((STOP_END - STOP_START) / (STOP_COUNT - 1)); });
+  fields.forEach(function(name, i){
+    var x = stopXs[i], y = STOP_Y;
+    var g = document.createElementNS("http://www.w3.org/2000/svg","g");
+    g.setAttribute("class","thread-stop");
+    var c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 4.5);
+    var t = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x", x); t.setAttribute("y", (i % 2 === 0) ? y - 16 : y + 24);
+    var anchor = i === 0 ? "start" : (i === STOP_COUNT - 1 ? "end" : "middle");
+    t.setAttribute("text-anchor", anchor);
+    t.textContent = shortFields[i];
+    g.appendChild(c); g.appendChild(t);
+    stopsG.appendChild(g);
+  });
+  var moreG = document.createElementNS("http://www.w3.org/2000/svg","g");
+  moreG.setAttribute("class","thread-stop is-more");
+  var moreC = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  moreC.setAttribute("cx", 1010); moreC.setAttribute("cy", STOP_Y); moreC.setAttribute("r", 4.5);
+  var moreT = document.createElementNS("http://www.w3.org/2000/svg","text");
+  moreT.setAttribute("x", 1020); moreT.setAttribute("y", STOP_Y + 4.5); moreT.setAttribute("text-anchor","start");
+  moreT.textContent = "+ more";
+  moreG.appendChild(moreC); moreG.appendChild(moreT);
+  stopsG.appendChild(moreG);
+
+  /* ================================================================
+     INTERVIEWS — loaded live from content/interviews.json, which the
+     admin editor at /admin writes to after sign-in. DEFAULT_INTERVIEWS
+     below is only a fallback (used if that file can't be fetched, e.g.
+     when this page is opened locally instead of served from Netlify).
+     Each entry:
+       name:     guest's name (leave "" to show as "Reserved")
+       industry: the field tag shown under their portrait
+       photo:    a direct image URL for their circular portrait, or ""
+                 to keep the placeholder ring
+       video:    a YouTube/Vimeo URL, or a direct .mp4/.webm URL, or ""
+                 to show "video coming soon"
+       post:     an array of paragraph strings for the write-up, or []
+                 to show the "coming soon" placeholder text
+     ================================================================ */
+  var DEFAULT_INTERVIEWS = [
+    { name: "", industry: "Agriculture", photo: "", video: "", post: [] },
+    { name: "", industry: "Manufacturing", photo: "", video: "", post: [] },
+    { name: "", industry: "Product Development", photo: "", video: "", post: [] },
+    { name: "", industry: "Marketing", photo: "", video: "", post: [] },
+    { name: "", industry: "Food Security", photo: "", video: "", post: [] },
+    { name: "", industry: "Nutrition", photo: "", video: "", post: [] },
+    { name: "", industry: "Medicine", photo: "", video: "", post: [] },
+    { name: "", industry: "Food Science", photo: "", video: "", post: [] }
+  ];
+
+  /* ---------------- interviews grid (built from a list of entries) ---------------- */
+  var faceGrid = document.getElementById("face-grid");
+  function renderInterviews(INTERVIEWS){
+  faceGrid.innerHTML = "";
+  INTERVIEWS.forEach(function(entry, i){
+    var li = document.createElement("li");
+    li.className = "face-card";
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "face-btn";
+    btn.setAttribute("aria-haspopup","dialog");
+    btn.setAttribute("aria-label", (entry.name || "Reserved interview slot") + ", " + entry.industry);
+    if (entry.photo){
+      btn.classList.add("has-photo");
+      var img = document.createElement("img");
+      img.src = entry.photo; img.alt = entry.name || entry.industry;
+      img.style.cssText = "width:100%;height:100%;object-fit:cover;";
+      btn.appendChild(img);
+    } else {
+      btn.textContent = "+";
+    }
+    btn.addEventListener("click", function(){ openModal(entry, i); });
+    var name = document.createElement("p");
+    name.className = "face-name"; name.textContent = entry.name || "Reserved";
+    var role = document.createElement("p");
+    role.className = "face-role tag"; role.textContent = entry.industry;
+    li.appendChild(btn); li.appendChild(name); li.appendChild(role);
+    faceGrid.appendChild(li);
+  });
+  }
+  renderInterviews(DEFAULT_INTERVIEWS);
+  fetch("/content/interviews.json", { cache: "no-store" })
+    .then(function(r){ if (!r.ok) throw new Error("missing content file"); return r.json(); })
+    .then(function(data){
+      if (data && Array.isArray(data.episodes) && data.episodes.length) renderInterviews(data.episodes);
+    })
+    .catch(function(){ /* not served over http(s) yet, or file missing — keep the placeholders */ });
+
+  function videoEmbedHTML(url){
+    var ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+    if (ytMatch){
+      return '<iframe src="https://www.youtube.com/embed/' + ytMatch[1] + '" title="Interview video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>';
+    }
+    var vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (vimeoMatch){
+      return '<iframe src="https://player.vimeo.com/video/' + vimeoMatch[1] + '" title="Interview video" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>';
+    }
+    return '<video controls preload="metadata" src="' + url + '" style="width:100%;height:100%;"></video>';
+  }
+
+  var modal = document.getElementById("interview-modal");
+  var modalTag = document.getElementById("modal-tag");
+  var modalName = document.getElementById("modal-name");
+  var modalVideo = document.getElementById("modal-video");
+  var modalPost = document.getElementById("modal-post");
+  function openModal(entry, i){
+    var ep = String(i + 1).padStart(2, "0");
+    modalTag.textContent = "Ep. " + ep + (entry.name ? "" : " — Reserved");
+    modalName.textContent = entry.name ? (entry.name + " — " + entry.industry) : (entry.industry + " — coming soon");
+
+    modalVideo.className = entry.video ? "" : "video-frame";
+    if (entry.video){
+      modalVideo.innerHTML = videoEmbedHTML(entry.video);
+      modalVideo.style.cssText = "aspect-ratio:16/9;margin-bottom:1.1rem;border-radius:3px;overflow:hidden;";
+    } else {
+      modalVideo.removeAttribute("style");
+      modalVideo.innerHTML = '<span class="play-tri" aria-hidden="true"></span><span class="tag">Video coming soon</span>';
+    }
+
+    if (entry.post && entry.post.length){
+      modalPost.innerHTML = entry.post.map(function(para){ return "<p>" + para + "</p>"; }).join("");
+      modalPost.querySelectorAll("p").forEach(function(p){ p.style.fontStyle = "normal"; p.style.color = "var(--ink)"; });
+    } else {
+      modalPost.innerHTML = "<p>Notes from this conversation will go here once it's recorded.</p><p>Check back after the episode airs for the full write-up.</p>";
+    }
+
+    if (typeof modal.showModal === "function") modal.showModal();
+    else modal.setAttribute("open","");
+  }
+  document.getElementById("modal-close").addEventListener("click", function(){ modal.close ? modal.close() : modal.removeAttribute("open"); });
+  modal.addEventListener("click", function(e){ if (e.target === modal) modal.close(); });
+
+  /* ---------------- project grid ---------------- */
+  var projectGrid = document.getElementById("project-grid");
+  for (var p = 1; p <= 6; p++){
+    var card = document.createElement("li");
+    card.className = "project-card";
+    card.innerHTML = "<div><p class='proj-tag'>Project 0" + p + "</p><p class='plus'>+</p></div><p>Reserved for a food science or ag-tech project &mdash; details coming soon.</p>";
+    projectGrid.appendChild(card);
+  }
+
+  /* ---------------- TRACEing web diagram ---------------- */
+  var svg = document.getElementById("tracing-svg");
+  var world = document.getElementById("tracing-world");
+  var CX = 450, CY = 320, R = 220;
+  var view = { x: 0, y: 0, scale: 1 };
+
+  var shortWebLabels = {
+    "Agriculture": "Agriculture", "Manufacturing": "Manufacturing",
+    "Product Development": "Product Dev.", "Marketing": "Marketing",
+    "Food Security": "Food Security", "Nutrition": "Nutrition",
+    "Medicine": "Medicine", "Food Science": "Food Science"
+  };
+  var descriptions = {
+    "Agriculture": "Growers, farmers, and the people making decisions in the field.",
+    "Manufacturing": "The plants and processes that turn raw ingredients into products.",
+    "Product Development": "The people shaping what actually ends up on shelves.",
+    "Marketing": "How food gets framed, priced, and sold to the people eating it.",
+    "Food Security": "Access, policy, and the systems that decide who gets fed.",
+    "Nutrition": "What food does once it's on the plate and in the body.",
+    "Medicine": "Clinicians and researchers working at the edge of food and health.",
+    "Food Science": "The lab work underneath almost everything else on this list."
+  };
+
+  function polar(cx, cy, r, angleDeg){
+    var rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  function svgEl(tag, attrs){
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  // hub
+  var hub = svgEl("g", { class: "web-node is-hub", tabindex: "0", role: "button", "aria-label": "Trace, the center of the web" });
+  hub.appendChild(svgEl("circle", { cx: CX, cy: CY, r: 40 }));
+  var hubText = svgEl("text", { x: CX, y: CY + 5, "text-anchor": "middle" });
+  hubText.textContent = "TRACE";
+  hub.appendChild(hubText);
+  world.appendChild(hub);
+
+  var nodeEls = [];
+  fields.forEach(function(name, i){
+    var angle = (360 / fields.length) * i;
+    var pos = polar(CX, CY, R, angle);
+    var edge = svgEl("path", {
+      class: "web-edge" + (i === 0 ? " is-example" : ""),
+      d: "M" + CX + "," + CY + " L" + pos.x + "," + pos.y,
+      "data-field": name
+    });
+    world.appendChild(edge);
+
+    var g = svgEl("g", { class: "web-node", tabindex: "0", role: "button", "aria-label": name + ", not yet mapped" });
+    g.appendChild(svgEl("circle", { cx: pos.x, cy: pos.y, r: 26 }));
+    var dotLabel = svgEl("text", { x: pos.x, y: pos.y + 4, "text-anchor": "middle", class: "node-dot-label" });
+    dotLabel.textContent = "+";
+    g.appendChild(dotLabel);
+    var label = svgEl("text", {
+      x: pos.x, y: pos.y + (pos.y < CY ? -38 : 46),
+      "text-anchor": "middle", class: "node-caption"
+    });
+    label.textContent = shortWebLabels[name];
+    g.appendChild(label);
+    g.dataset.field = name;
+    world.appendChild(g);
+    nodeEls.push({ g: g, edge: edge, name: name });
+
+    function select(){
+      nodeEls.forEach(function(n){
+        n.g.classList.toggle("is-active", n.name === name);
+        if (!n.edge.classList.contains("is-example")) n.edge.classList.toggle("is-active", n.name === name);
+      });
+      var panel = document.getElementById("tracing-panel");
+      panel.innerHTML = "<p class='panel-title'>" + name + (i === 0 ? " — example" : " — 0 interviews mapped") + "</p><p class='panel-body'>" + descriptions[name] + (i === 0 ? " This edge is an example of how a confirmed connection will look once an episode names it." : " No connections mapped yet — check back as interviews go up.") + "</p>";
+    }
+    g.addEventListener("click", select);
+    g.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); select(); } });
+  });
+  hub.addEventListener("click", function(){
+    nodeEls.forEach(function(n){ n.g.classList.remove("is-active"); if (!n.edge.classList.contains("is-example")) n.edge.classList.remove("is-active"); });
+    document.getElementById("tracing-panel").innerHTML = "<p class='panel-title'>Trace</p><p class='panel-body'>The center of the web — every field below eventually threads back to a conversation on Trace.</p>";
+  });
+
+  function applyTransform(){
+    world.setAttribute("transform", "translate(" + view.x + "," + view.y + ") scale(" + view.scale + ")");
+  }
+
+  function zoomBy(factor, cx, cy){
+    var newScale = Math.min(3, Math.max(0.5, view.scale * factor));
+    var f = newScale / view.scale;
+    view.x = cx - f * (cx - view.x);
+    view.y = cy - f * (cy - view.y);
+    view.scale = newScale;
+    applyTransform();
+  }
+
+  function svgPoint(evt){
+    var rect = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var x = (evt.clientX - rect.left) / rect.width * vb.width + vb.x;
+    var y = (evt.clientY - rect.top) / rect.height * vb.height + vb.y;
+    return { x: x, y: y };
+  }
+
+  svg.addEventListener("wheel", function(e){
+    e.preventDefault();
+    var pt = svgPoint(e);
+    zoomBy(e.deltaY < 0 ? 1.12 : 0.89, pt.x, pt.y);
+  }, { passive: false });
+
+  document.getElementById("zoom-in").addEventListener("click", function(){ zoomBy(1.2, CX, CY); });
+  document.getElementById("zoom-out").addEventListener("click", function(){ zoomBy(0.8, CX, CY); });
+  document.getElementById("zoom-reset").addEventListener("click", function(){ view = { x: 0, y: 0, scale: 1 }; applyTransform(); });
+
+  var dragging = false, last = null;
+  svg.addEventListener("pointerdown", function(e){
+    if (e.target.closest && e.target.closest(".web-node")) return; // let node clicks through untouched
+    dragging = true; last = { x: e.clientX, y: e.clientY };
+    svg.classList.add("is-dragging");
+    svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener("pointermove", function(e){
+    if (!dragging) return;
+    var vb = svg.viewBox.baseVal;
+    var rect = svg.getBoundingClientRect();
+    var dx = (e.clientX - last.x) / rect.width * vb.width;
+    var dy = (e.clientY - last.y) / rect.height * vb.height;
+    view.x += dx; view.y += dy;
+    last = { x: e.clientX, y: e.clientY };
+    applyTransform();
+  });
+  ["pointerup","pointercancel","pointerleave"].forEach(function(ev){
+    svg.addEventListener(ev, function(){ dragging = false; svg.classList.remove("is-dragging"); });
+  });
+
+  applyTransform();
+})();
+</script>
+
+</body>
+</html>

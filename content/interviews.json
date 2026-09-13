@@ -1,0 +1,12 @@
+{
+  "episodes": [
+    { "name": "", "industry": "Agriculture", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Manufacturing", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Product Development", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Marketing", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Food Security", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Nutrition", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Medicine", "photo": "", "video": "", "post": [] },
+    { "name": "", "industry": "Food Science", "photo": "", "video": "", "post": [] }
+  ]
+}
