@@ -293,8 +293,10 @@
       <a href="#/home" data-route="home">Home</a>
       <a href="#/about" data-route="about">About</a>
       <a href="#/interviews" data-route="interviews">Interviews</a>
+      <!-- Hidden for now: TRACEing and Portfolio. To restore, uncomment these and add "tracing","portfolio" back to the routes list.
       <a href="#/tracing" data-route="tracing">TRACEing</a>
       <a href="#/portfolio" data-route="portfolio">Portfolio</a>
+      -->
     </nav>
     <div class="auth-control" id="auth-control"></div>
   </div>
@@ -312,7 +314,7 @@
         <p class="lede">Each conversation follows one thread of the food system: agriculture, manufacturing, product development, marketing, food security, nutrition, medicine, and food science &mdash; and how those threads knot together.</p>
         <div class="cta-row">
           <a class="btn primary" href="#/interviews">Meet the people <span class="arrow">&rarr;</span></a>
-          <a class="btn ghost" href="#/tracing">See how it connects <span class="arrow">&rarr;</span></a>
+          <!-- <a class="btn ghost" href="#/tracing">See how it connects <span class="arrow">&rarr;</span></a> -->
         </div>
       </div>
 
@@ -336,7 +338,7 @@
         <path class="thread-line" d="M30,95 C 150,78 190,112 310,95 S 470,78 550,95 S 710,112 750,95 S 870,78 1010,95" />
         <g id="thread-stops"></g>
       </svg>
-      <figcaption>The fields Trace moves between &mdash; one continuous thread, stop by stop. The full, connected map lives on the <a href="#/tracing">TRACEing</a> page.</figcaption>
+      <figcaption>The fields Trace moves between &mdash; one continuous thread, stop by stop.</figcaption>
     </figure>
   </section>
 
@@ -378,7 +380,7 @@
   </section>
 
   <!-- ============ TRACEING ============ -->
-  <section class="page page-section" id="page-tracing" data-page="tracing">
+  <section class="page page-section" id="page-tracing" data-page="tracing" hidden>
     <div class="section-head">
       <p class="eyebrow">The supply web &mdash; coming soon</p>
       <h2>TRACEing</h2>
@@ -412,7 +414,7 @@
   </section>
 
   <!-- ============ PORTFOLIO ============ -->
-  <section class="page page-section" id="page-portfolio" data-page="portfolio">
+  <section class="page page-section" id="page-portfolio" data-page="portfolio" hidden>
     <div class="section-head">
       <p class="eyebrow">Work in progress</p>
       <h2>Portfolio &amp; projects</h2>
@@ -483,7 +485,7 @@
   }
 
   /* ---------------- routing ---------------- */
-  var routes = ["home","about","interviews","tracing","portfolio"];
+  var routes = ["home","about","interviews"]; // "tracing","portfolio" hidden for now
   function applyRoute(){
     var hash = (location.hash || "#/home").replace(/^#\/?/, "");
     if (routes.indexOf(hash) === -1) hash = "home";
